@@ -13,7 +13,13 @@ DEFAULT_INSTALL_DIR = '.ansible-runner'
 DEFAULT_REQUIREMENTS_FILE = 'build-requirements.yml'
 DEFAULT_PLAYBOOK_FILE = 'build-playbook.yml'
 
-def run():
+ACTION_PREFIX = '>'*5
+
+def run_cmd(cmd):
+    print "%s Running command: %s" % (ACTION_PREFIX, ' '.join(cmd))
+    call(cmd)
+
+def ansible_runner():
     parser = ArgumentParser(description='Python helper script to install ansible in a virtual environment, install roles, and run a playbook')
     parser.add_argument('-i', '--install-dir', dest='install_dir', default=DEFAULT_INSTALL_DIR,
                       help='Install dir for ansible virtual environment. Defaults to "%s"' % DEFAULT_INSTALL_DIR )
@@ -30,29 +36,32 @@ def run():
     args = parser.parse_args()
 
     if args.clean and os.path.isdir(args.install_dir):
+        print "%s Removing the install directory: %s" % (ACTION_PREFIX, args.install_dir)
         shutil.rmtree(args.install_dir)
 
     if not os.path.isdir(args.install_dir):
+        print "%s Creating the install directory: %s" % (ACTION_PREFIX, args.install_dir)
         os.makedirs(args.install_dir)
 
     venv_archive_file = 'virtualenv-%s.tar.gz' % args.venv_version
     venv_archive_path = '%s/%s' % (args.install_dir, venv_archive_file)
     venv_archive_url = 'https://github.com/pypa/virtualenv/tarball/%s' % args.venv_version
     if not os.path.isfile(venv_archive_path):
-        call(['curl', '--location', '--output', venv_archive_path, venv_archive_url])
+        run_cmd(['curl', '--location', '--output', venv_archive_path, venv_archive_url])
 
-    call(['tar', 'xvfz', venv_archive_path, '-C', args.install_dir])
+
+    run_cmd(['tar', 'xvfz', venv_archive_path, '-C', args.install_dir])
 
     venv_unpack_dir = glob.glob('%s/pypa-virtualenv-*' % args.install_dir)[0]
     venv_dir = '%s/VE' % args.install_dir
 
     if not os.path.isdir(venv_dir):
-        call([sys.executable, '%s/src/virtualenv.py' % venv_unpack_dir, venv_dir])
+        run_cmd([sys.executable, '%s/src/virtualenv.py' % venv_unpack_dir, venv_dir])
 
-    call(['%s/bin/pip' % venv_dir, 'install', args.ansible_req])
-    call(['%s/bin/ansible-galaxy' % venv_dir, 'install', '-r', args.requirements])
-    call(['%s/bin/ansible-playbook' % venv_dir, args.playbook])
+    run_cmd(['%s/bin/pip' % venv_dir, 'install', args.ansible_req])
+    run_cmd(['%s/bin/ansible-galaxy' % venv_dir, 'install', '-r', args.requirements])
+    run_cmd(['%s/bin/ansible-playbook' % venv_dir, args.playbook])
 
 
 if __name__ == '__main__':
-    run()
+    ansible_runner()
