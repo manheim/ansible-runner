@@ -1,20 +1,32 @@
-# ansible_runner
+# ansible-runner
 
-Shell script to install ansible in a virtual environment and run a playbook
+Python helper script to install ansible in a virtual environment, install roles, and run a playbook
 
 
 ## Usage
 
 ```
-###############################################################################################
-## ansible_runner.sh [<requirements file>] [<playbook file>] [<ansible version>] [<python exe>]
-##
-##    requirements file:  path to role requirements file.  defaults to 'requirements.yml'
-##    playbook file:  path to playbook file.  defaults to 'playbook.yml'
-##    ansible version:  ansible version. defaults to latest version on pypi
-##    python exe:  path to python exe. defaults to 'python'
-###############################################################################################
+Usage: ansible-runner.py [options]
 
+Options:
+  -h, --help            show this help message and exit
+  -r REQUIREMENTS, --requirements=REQUIREMENTS
+                        Path to ansible galaxy requirements file. Defaults to
+                        "build-requirements.yml"
+  -p PLAYBOOK, --playbook=PLAYBOOK
+                        Path to playbook file. Defaults to "build-
+                        playbook.yml"
+  -a ANSIBLE_REQ, --ansible-requirement=ANSIBLE_REQ
+                        The pip install ansible requirement. Defaults to
+                        "ansible"
+  -e PYTHON_EXE, --python-exe=PYTHON_EXE
+                        Path to python exe. Defaults to "python"
+  -i INSTALL_DIR, --install-dir=INSTALL_DIR
+                        Install dir for ansible virtual environment. Defaults
+                        to ".ansible-runner"
+  -v VENV_VERSION, --virtualenv-version=VENV_VERSION
+                        Virtualenv version to use. Defaults to "16.1.0"
+  -c, --clean           Clean the install dir, if it exists.
 ```
 
 ## Example
