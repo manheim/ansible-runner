@@ -56,7 +56,7 @@ def ansible_runner():
     venv_dir = '%s/VE' % args.install_dir
 
     if not os.path.isdir(venv_dir):
-        run_cmd([sys.executable, '%s/src/virtualenv.py' % venv_unpack_dir, venv_dir])
+        run_cmd([sys.executable, '%s/src/virtualenv.py' % venv_unpack_dir, '--system-site-packages', venv_dir])
 
     run_cmd(['%s/bin/pip' % venv_dir, 'install', args.ansible_req])
 
