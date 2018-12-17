@@ -24,7 +24,7 @@ def ansible_runner():
     parser.add_argument('-i', '--install-dir', dest='install_dir', default=DEFAULT_INSTALL_DIR,
                       help='Install dir for ansible virtual environment. Defaults to "%s"' % DEFAULT_INSTALL_DIR )
     parser.add_argument('-c', '--clean', dest='clean', action='store_true',
-                      help='Clean the install dir, if it exists.' )
+                        help='Clean the install dir, if it exists, and reinstall roles' )
     parser.add_argument('-v', '--virtualenv-version', dest='venv_version', default=DEFAULT_VIRTUALENV_VERSION,
                       help='Virtualenv version to use. Defaults to "%s"' % DEFAULT_VIRTUALENV_VERSION)
     parser.add_argument('-a', '--ansible-requirement', dest='ansible_req',  default=DEFAULT_ANSIBLE_REQUIREMENT,
@@ -59,7 +59,12 @@ def ansible_runner():
         run_cmd([sys.executable, '%s/src/virtualenv.py' % venv_unpack_dir, venv_dir])
 
     run_cmd(['%s/bin/pip' % venv_dir, 'install', args.ansible_req])
-    run_cmd(['%s/bin/ansible-galaxy' % venv_dir, 'install', '-r', args.requirements])
+
+    cmd = ['%s/bin/ansible-galaxy' % venv_dir, 'install', '-r', args.requirements]
+    if args.clean:
+        cmd.append('-f')
+    run_cmd(cmd)
+
     run_cmd(['%s/bin/ansible-playbook' % venv_dir, args.playbook])
 
 
