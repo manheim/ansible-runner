@@ -11,20 +11,20 @@ DEFAULT_ANSIBLE_REQ = 'ansible'
 
 def run():
     parser = OptionParser()
-    parser.add_option('-r', '--requirements', dest='requirements', default='build-requirements.yml',
-                      help='Path to ansible galaxy requirements file. Defaults to "build-requirements.yml"' )
-    parser.add_option('-p', '--playbook', dest='playbook', default='build-playbook.yml',
-                      help='Path to playbook file. Defaults to "build-playbook.yml"' )
-    parser.add_option('-a', '--ansible-requirement', dest='ansible_req',  default=DEFAULT_ANSIBLE_REQ,
-                      help='The pip install ansible requirement. Defaults to "%s"' % DEFAULT_ANSIBLE_REQ )
-    parser.add_option('-e', '--python-exe', dest='python_exe', default='python',
-                      help='Path to python exe. Defaults to "python"' )
     parser.add_option('-i', '--install-dir', dest='install_dir', default='.ansible-runner',
                       help='Install dir for ansible virtual environment. Defaults to ".ansible-runner"' )
-    parser.add_option('-v', '--virtualenv-version', dest='venv_version', default=DEFAULT_VIRTUALENV_VERSION,
-                      help='Virtualenv version to use. Defaults to "%s"' % DEFAULT_VIRTUALENV_VERSION)
     parser.add_option('-c', '--clean', dest='clean', action='store_true',
                       help='Clean the install dir, if it exists.' )
+    parser.add_option('-v', '--virtualenv-version', dest='venv_version', default=DEFAULT_VIRTUALENV_VERSION,
+                      help='Virtualenv version to use. Defaults to "%s"' % DEFAULT_VIRTUALENV_VERSION)
+    parser.add_option('-a', '--ansible-requirement', dest='ansible_req',  default=DEFAULT_ANSIBLE_REQ,
+                      help='The pip install ansible requirement. Defaults to "%s"' % DEFAULT_ANSIBLE_REQ )
+    parser.add_option('-r', '--requirements', dest='requirements', default='build-requirements.yml',
+                      help='Path to ansible galaxy requirements to install roles from. Defaults to "build-requirements.yml"' )
+    parser.add_option('-p', '--playbook', dest='playbook', default='build-playbook.yml',
+                      help='Path to playbook file to run. Defaults to "build-playbook.yml"' )
+    parser.add_option('-e', '--python-exe', dest='python_exe', default='python',
+                      help='Path to python exe. Defaults to "python"' )
     (options, args) = parser.parse_args()
 
     if options.clean and os.path.isdir(options.install_dir):
