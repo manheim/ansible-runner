@@ -30,7 +30,7 @@ def ansible_runner():
     parser.add_argument('-a', '--ansible-requirement', dest='ansible_req',  default=DEFAULT_ANSIBLE_REQUIREMENT,
                       help='The pip install ansible requirement. Defaults to "%s"' % DEFAULT_ANSIBLE_REQUIREMENT )
     parser.add_argument('-r', '--requirements', dest='requirements', default=DEFAULT_REQUIREMENTS_FILE,
-                      help='Path to ansible galaxy requirements to install roles from. Defaults to "%s"' % DEFAULT_REQUIREMENTS_FILE )
+                      help='Path to ansible galaxy requirements file to install roles from. Defaults to "%s"' % DEFAULT_REQUIREMENTS_FILE )
     parser.add_argument('-p', '--playbook', dest='playbook', default=DEFAULT_PLAYBOOK_FILE,
                       help='Path to playbook file to run. Defaults to "%s"' % DEFAULT_PLAYBOOK_FILE )
     args = parser.parse_args()

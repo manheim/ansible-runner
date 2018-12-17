@@ -1,4 +1,4 @@
-# ansible-runner
+# ansible-runner.py
 
 Python helper script to install ansible in a virtual environment, install roles, and run a playbook
 
@@ -24,8 +24,8 @@ optional arguments:
                         The pip install ansible requirement. Defaults to
                         "ansible"
   -r REQUIREMENTS, --requirements REQUIREMENTS
-                        Path to ansible galaxy requirements to install roles
-                        from. Defaults to "build-requirements.yml"
+                        Path to ansible galaxy requirements file to install
+                        roles from. Defaults to "build-requirements.yml"
   -p PLAYBOOK, --playbook PLAYBOOK
                         Path to playbook file to run. Defaults to "build-
                         playbook.yml"
