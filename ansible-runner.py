@@ -4,7 +4,7 @@ import glob
 import os
 import shutil
 import sys
-from optparse import OptionParser
+from argparse import ArgumentParser
 from subprocess import call
 
 DEFAULT_VIRTUALENV_VERSION = '16.1.0'
@@ -14,44 +14,44 @@ DEFAULT_REQUIREMENTS_FILE = 'build-requirements.yml'
 DEFAULT_PLAYBOOK_FILE = 'build-playbook.yml'
 
 def run():
-    parser = OptionParser()
-    parser.add_option('-i', '--install-dir', dest='install_dir', default=DEFAULT_INSTALL_DIR,
+    parser = ArgumentParser(description='Python helper script to install ansible in a virtual environment, install roles, and run a playbook')
+    parser.add_argument('-i', '--install-dir', dest='install_dir', default=DEFAULT_INSTALL_DIR,
                       help='Install dir for ansible virtual environment. Defaults to "%s"' % DEFAULT_INSTALL_DIR )
-    parser.add_option('-c', '--clean', dest='clean', action='store_true',
+    parser.add_argument('-c', '--clean', dest='clean', action='store_true',
                       help='Clean the install dir, if it exists.' )
-    parser.add_option('-v', '--virtualenv-version', dest='venv_version', default=DEFAULT_VIRTUALENV_VERSION,
+    parser.add_argument('-v', '--virtualenv-version', dest='venv_version', default=DEFAULT_VIRTUALENV_VERSION,
                       help='Virtualenv version to use. Defaults to "%s"' % DEFAULT_VIRTUALENV_VERSION)
-    parser.add_option('-a', '--ansible-requirement', dest='ansible_req',  default=DEFAULT_ANSIBLE_REQUIREMENT,
+    parser.add_argument('-a', '--ansible-requirement', dest='ansible_req',  default=DEFAULT_ANSIBLE_REQUIREMENT,
                       help='The pip install ansible requirement. Defaults to "%s"' % DEFAULT_ANSIBLE_REQUIREMENT )
-    parser.add_option('-r', '--requirements', dest='requirements', default=DEFAULT_REQUIREMENTS_FILE,
+    parser.add_argument('-r', '--requirements', dest='requirements', default=DEFAULT_REQUIREMENTS_FILE,
                       help='Path to ansible galaxy requirements to install roles from. Defaults to "%s"' % DEFAULT_REQUIREMENTS_FILE )
-    parser.add_option('-p', '--playbook', dest='playbook', default=DEFAULT_PLAYBOOK_FILE,
+    parser.add_argument('-p', '--playbook', dest='playbook', default=DEFAULT_PLAYBOOK_FILE,
                       help='Path to playbook file to run. Defaults to "%s"' % DEFAULT_PLAYBOOK_FILE )
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
 
-    if options.clean and os.path.isdir(options.install_dir):
-        shutil.rmtree(options.install_dir)
+    if args.clean and os.path.isdir(args.install_dir):
+        shutil.rmtree(args.install_dir)
 
-    if not os.path.isdir(options.install_dir):
-        os.makedirs(options.install_dir)
+    if not os.path.isdir(args.install_dir):
+        os.makedirs(args.install_dir)
 
-    venv_archive_file = 'virtualenv-%s.tar.gz' % options.venv_version
-    venv_archive_path = '%s/%s' % (options.install_dir, venv_archive_file)
-    venv_archive_url = 'https://github.com/pypa/virtualenv/tarball/%s' % options.venv_version
+    venv_archive_file = 'virtualenv-%s.tar.gz' % args.venv_version
+    venv_archive_path = '%s/%s' % (args.install_dir, venv_archive_file)
+    venv_archive_url = 'https://github.com/pypa/virtualenv/tarball/%s' % args.venv_version
     if not os.path.isfile(venv_archive_path):
         call(['curl', '--location', '--output', venv_archive_path, venv_archive_url])
 
-    call(['tar', 'xvfz', venv_archive_path, '-C', options.install_dir])
+    call(['tar', 'xvfz', venv_archive_path, '-C', args.install_dir])
 
-    venv_unpack_dir = glob.glob('%s/pypa-virtualenv-*' % options.install_dir)[0]
-    venv_dir = '%s/VE' % options.install_dir
+    venv_unpack_dir = glob.glob('%s/pypa-virtualenv-*' % args.install_dir)[0]
+    venv_dir = '%s/VE' % args.install_dir
 
     if not os.path.isdir(venv_dir):
         call([sys.executable, '%s/src/virtualenv.py' % venv_unpack_dir, venv_dir])
 
-    call(['%s/bin/pip' % venv_dir, 'install', options.ansible_req])
-    call(['%s/bin/ansible-galaxy' % venv_dir, 'install', '-r', options.requirements])
-    call(['%s/bin/ansible-playbook' % venv_dir, options.playbook])
+    call(['%s/bin/pip' % venv_dir, 'install', args.ansible_req])
+    call(['%s/bin/ansible-galaxy' % venv_dir, 'install', '-r', args.requirements])
+    call(['%s/bin/ansible-playbook' % venv_dir, args.playbook])
 
 
 if __name__ == '__main__':
