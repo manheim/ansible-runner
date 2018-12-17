@@ -30,5 +30,3 @@ optional arguments:
                         Path to playbook file to run. Defaults to "build-
                         playbook.yml"
 ```
-
-## Example
