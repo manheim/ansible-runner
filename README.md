@@ -25,8 +25,6 @@ Options:
   -p PLAYBOOK, --playbook=PLAYBOOK
                         Path to playbook file to run. Defaults to "build-
                         playbook.yml"
-  -e PYTHON_EXE, --python-exe=PYTHON_EXE
-                        Path to python exe. Defaults to "python"
 ```
 
 ## Example

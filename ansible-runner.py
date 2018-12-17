@@ -3,6 +3,7 @@
 import glob
 import os
 import shutil
+import sys
 from optparse import OptionParser
 from subprocess import call
 
@@ -23,8 +24,6 @@ def run():
                       help='Path to ansible galaxy requirements to install roles from. Defaults to "build-requirements.yml"' )
     parser.add_option('-p', '--playbook', dest='playbook', default='build-playbook.yml',
                       help='Path to playbook file to run. Defaults to "build-playbook.yml"' )
-    parser.add_option('-e', '--python-exe', dest='python_exe', default='python',
-                      help='Path to python exe. Defaults to "python"' )
     (options, args) = parser.parse_args()
 
     if options.clean and os.path.isdir(options.install_dir):
@@ -45,7 +44,7 @@ def run():
     venv_dir = '%s/VE' % options.install_dir
 
     if not os.path.isdir(venv_dir):
-        call([options.python_exe, '%s/src/virtualenv.py' % venv_unpack_dir, venv_dir])
+        call([sys.executable, '%s/src/virtualenv.py' % venv_unpack_dir, venv_dir])
 
     call(['%s/bin/pip' % venv_dir, 'install', options.ansible_req])
     call(['%s/bin/ansible-galaxy' % venv_dir, 'install', '-r', options.requirements])
