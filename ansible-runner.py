@@ -8,22 +8,25 @@ from optparse import OptionParser
 from subprocess import call
 
 DEFAULT_VIRTUALENV_VERSION = '16.1.0'
-DEFAULT_ANSIBLE_REQ = 'ansible'
+DEFAULT_ANSIBLE_REQUIREMENT = 'ansible'
+DEFAULT_INSTALL_DIR = '.ansible-runner'
+DEFAULT_REQUIREMENTS_FILE = 'build-requirements.yml'
+DEFAULT_PLAYBOOK_FILE = 'build-playbook.yml'
 
 def run():
     parser = OptionParser()
-    parser.add_option('-i', '--install-dir', dest='install_dir', default='.ansible-runner',
-                      help='Install dir for ansible virtual environment. Defaults to ".ansible-runner"' )
+    parser.add_option('-i', '--install-dir', dest='install_dir', default=DEFAULT_INSTALL_DIR,
+                      help='Install dir for ansible virtual environment. Defaults to "%s"' % DEFAULT_INSTALL_DIR )
     parser.add_option('-c', '--clean', dest='clean', action='store_true',
                       help='Clean the install dir, if it exists.' )
     parser.add_option('-v', '--virtualenv-version', dest='venv_version', default=DEFAULT_VIRTUALENV_VERSION,
                       help='Virtualenv version to use. Defaults to "%s"' % DEFAULT_VIRTUALENV_VERSION)
-    parser.add_option('-a', '--ansible-requirement', dest='ansible_req',  default=DEFAULT_ANSIBLE_REQ,
-                      help='The pip install ansible requirement. Defaults to "%s"' % DEFAULT_ANSIBLE_REQ )
-    parser.add_option('-r', '--requirements', dest='requirements', default='build-requirements.yml',
-                      help='Path to ansible galaxy requirements to install roles from. Defaults to "build-requirements.yml"' )
-    parser.add_option('-p', '--playbook', dest='playbook', default='build-playbook.yml',
-                      help='Path to playbook file to run. Defaults to "build-playbook.yml"' )
+    parser.add_option('-a', '--ansible-requirement', dest='ansible_req',  default=DEFAULT_ANSIBLE_REQUIREMENT,
+                      help='The pip install ansible requirement. Defaults to "%s"' % DEFAULT_ANSIBLE_REQUIREMENT )
+    parser.add_option('-r', '--requirements', dest='requirements', default=DEFAULT_REQUIREMENTS_FILE,
+                      help='Path to ansible galaxy requirements to install roles from. Defaults to "%s"' % DEFAULT_REQUIREMENTS_FILE )
+    parser.add_option('-p', '--playbook', dest='playbook', default=DEFAULT_PLAYBOOK_FILE,
+                      help='Path to playbook file to run. Defaults to "%s"' % DEFAULT_PLAYBOOK_FILE )
     (options, args) = parser.parse_args()
 
     if options.clean and os.path.isdir(options.install_dir):
