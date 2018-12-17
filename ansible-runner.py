@@ -4,8 +4,8 @@ import glob
 import os
 import shutil
 import sys
+import subprocess
 from argparse import ArgumentParser
-from subprocess import check_call
 
 DEFAULT_VIRTUALENV_VERSION = '16.1.0'
 DEFAULT_ANSIBLE_REQUIREMENT = 'ansible'
@@ -17,7 +17,8 @@ ACTION_PREFIX = '>'*5
 
 def run_cmd(cmd):
     print "%s Running command: %s" % (ACTION_PREFIX, ' '.join(cmd))
-    check_call(cmd)
+    (stdout, stderr) = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()
+    print stdout
 
 def ansible_runner():
     parser = ArgumentParser(description='Python helper script to install ansible in a virtual environment, install roles, and run a playbook')
