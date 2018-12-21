@@ -23,21 +23,21 @@ def run_cmd(cmd):
     print stdout
 
 def ansible_runner():
-    parser = ArgumentParser(description='Python helper script to install ansible in a virtual environment, install roles, and run a playbook')
+    parser = ArgumentParser(description='Python script to install ansible in a virtual environment, install roles, and run a playbook')
     parser.add_argument('-i', '--install-dir', default=DEFAULT_INSTALL_DIR,
-                      help='Install dir for ansible virtual environment. Defaults to "%s"' % DEFAULT_INSTALL_DIR )
+                      help='Installation directory for the python virtual environment. Defaults to "%s"' % DEFAULT_INSTALL_DIR )
     parser.add_argument('-c', '--clean', action='store_true',
-                        help='Clean the install dir, if it exists, and reinstall roles' )
+                        help='Recreate the installation directory; Also, force the installation of roles' )
     parser.add_argument('-v', '--venv-version', default=DEFAULT_VIRTUALENV_VERSION,
                       help='Virtualenv version to use. Defaults to "%s"' % DEFAULT_VIRTUALENV_VERSION)
     parser.add_argument('-a', '--ansible-requirement', default=DEFAULT_ANSIBLE_REQUIREMENT,
-                      help='The pip install ansible requirement. Defaults to "%s"' % DEFAULT_ANSIBLE_REQUIREMENT )
+                      help='The ansible requirement for the pip install. Defaults to "%s"' % DEFAULT_ANSIBLE_REQUIREMENT )
     parser.add_argument('-r', '--requirements', default=DEFAULT_REQUIREMENTS_FILE,
-                      help='Path to ansible galaxy requirements file to install roles from. Defaults to "%s"' % DEFAULT_REQUIREMENTS_FILE )
+                      help='Path to the ansible galaxy requirements file to install roles from. Defaults to "%s"' % DEFAULT_REQUIREMENTS_FILE )
     parser.add_argument('-p', '--playbook', default=DEFAULT_PLAYBOOK_FILE,
-                      help='Path to playbook file to run. Defaults to "%s"' % DEFAULT_PLAYBOOK_FILE )
+                      help='Path to the playbook file to run. Defaults to "%s"' % DEFAULT_PLAYBOOK_FILE )
     parser.add_argument('-e', '--expand-env-vars', action='store_true',
-                        help='Inline expansion of environment variables (with pattern  ${VAR}) in the requirements file. Backup the old file to *.bak' )
+                        help='Inline expand environment variables (with pattern  ${VAR}) in the requirements file. Back up the old file to *.bak' )
     args = parser.parse_args()
 
     if args.expand_env_vars:
