@@ -1,7 +1,9 @@
 #! /usr/bin/python
 
+import fileinput
 import glob
 import os
+import re
 import shutil
 import sys
 import subprocess
@@ -22,19 +24,28 @@ def run_cmd(cmd):
 
 def ansible_runner():
     parser = ArgumentParser(description='Python helper script to install ansible in a virtual environment, install roles, and run a playbook')
-    parser.add_argument('-i', '--install-dir', dest='install_dir', default=DEFAULT_INSTALL_DIR,
+    parser.add_argument('-i', '--install-dir', default=DEFAULT_INSTALL_DIR,
                       help='Install dir for ansible virtual environment. Defaults to "%s"' % DEFAULT_INSTALL_DIR )
-    parser.add_argument('-c', '--clean', dest='clean', action='store_true',
+    parser.add_argument('-c', '--clean', action='store_true',
                         help='Clean the install dir, if it exists, and reinstall roles' )
-    parser.add_argument('-v', '--virtualenv-version', dest='venv_version', default=DEFAULT_VIRTUALENV_VERSION,
+    parser.add_argument('-v', '--venv-version', default=DEFAULT_VIRTUALENV_VERSION,
                       help='Virtualenv version to use. Defaults to "%s"' % DEFAULT_VIRTUALENV_VERSION)
-    parser.add_argument('-a', '--ansible-requirement', dest='ansible_req',  default=DEFAULT_ANSIBLE_REQUIREMENT,
+    parser.add_argument('-a', '--ansible-requirement', default=DEFAULT_ANSIBLE_REQUIREMENT,
                       help='The pip install ansible requirement. Defaults to "%s"' % DEFAULT_ANSIBLE_REQUIREMENT )
-    parser.add_argument('-r', '--requirements', dest='requirements', default=DEFAULT_REQUIREMENTS_FILE,
+    parser.add_argument('-r', '--requirements', default=DEFAULT_REQUIREMENTS_FILE,
                       help='Path to ansible galaxy requirements file to install roles from. Defaults to "%s"' % DEFAULT_REQUIREMENTS_FILE )
-    parser.add_argument('-p', '--playbook', dest='playbook', default=DEFAULT_PLAYBOOK_FILE,
+    parser.add_argument('-p', '--playbook', default=DEFAULT_PLAYBOOK_FILE,
                       help='Path to playbook file to run. Defaults to "%s"' % DEFAULT_PLAYBOOK_FILE )
+    parser.add_argument('-e', '--process-env-vars', action='store_true',
+                        help='Replace env vars (patterns like ${VAR}) with the actual value in the current process for the requirements file and backup to *.bak' )
     args = parser.parse_args()
+
+    if args.process_env_vars:
+        for line in fileinput.input([args.requirements], inplace=1, backup='.bak'):
+            matches = re.compile(r'\${(\S*)}').findall(line.rstrip())
+            for match in matches:
+                line = re.sub('\${%s}' % match, os.environ[match], line.rstrip())
+            print(line.rstrip())
 
     if args.clean and os.path.isdir(args.install_dir):
         print "%s Removing the install directory: %s" % (ACTION_PREFIX, args.install_dir)
@@ -59,7 +70,7 @@ def ansible_runner():
     if not os.path.isdir(venv_dir):
         run_cmd([sys.executable, '%s/src/virtualenv.py' % venv_unpack_dir, '--system-site-packages', venv_dir])
 
-    run_cmd(['%s/bin/pip' % venv_dir, 'install', args.ansible_req])
+    run_cmd(['%s/bin/pip' % venv_dir, 'install', args.ansible_requirement])
 
     cmd = ['%s/bin/ansible-galaxy' % venv_dir, 'install', '-r', args.requirements]
     if args.clean:
