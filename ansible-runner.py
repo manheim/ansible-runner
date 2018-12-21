@@ -36,11 +36,11 @@ def ansible_runner():
                       help='Path to ansible galaxy requirements file to install roles from. Defaults to "%s"' % DEFAULT_REQUIREMENTS_FILE )
     parser.add_argument('-p', '--playbook', default=DEFAULT_PLAYBOOK_FILE,
                       help='Path to playbook file to run. Defaults to "%s"' % DEFAULT_PLAYBOOK_FILE )
-    parser.add_argument('-e', '--process-env-vars', action='store_true',
-                        help='Inline replace environment variables (with pattern  ${VAR}) in the requirements file. Backup the old file to *.bak' )
+    parser.add_argument('-e', '--expand-env-vars', action='store_true',
+                        help='Inline expansion of environment variables (with pattern  ${VAR}) in the requirements file. Backup the old file to *.bak' )
     args = parser.parse_args()
 
-    if args.process_env_vars:
+    if args.expand_env_vars:
         for line in fileinput.input([args.requirements], inplace=1, backup='.bak'):
             matches = re.compile(r'\${(\S*)}').findall(line.rstrip())
             for match in matches:
