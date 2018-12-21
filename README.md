@@ -7,7 +7,8 @@ Python helper script to install ansible in a virtual environment, install roles,
 
 ```
 usage: ansible-runner.py [-h] [-i INSTALL_DIR] [-c] [-v VENV_VERSION]
-                         [-a ANSIBLE_REQ] [-r REQUIREMENTS] [-p PLAYBOOK]
+                         [-a ANSIBLE_REQUIREMENT] [-r REQUIREMENTS]
+                         [-p PLAYBOOK] [-e]
 
 Python helper script to install ansible in a virtual environment, install
 roles, and run a playbook
@@ -17,10 +18,11 @@ optional arguments:
   -i INSTALL_DIR, --install-dir INSTALL_DIR
                         Install dir for ansible virtual environment. Defaults
                         to ".ansible-runner"
-  -c, --clean           Clean the install dir, if it exists.
-  -v VENV_VERSION, --virtualenv-version VENV_VERSION
+  -c, --clean           Clean the install dir, if it exists, and reinstall
+                        roles
+  -v VENV_VERSION, --venv-version VENV_VERSION
                         Virtualenv version to use. Defaults to "16.1.0"
-  -a ANSIBLE_REQ, --ansible-requirement ANSIBLE_REQ
+  -a ANSIBLE_REQUIREMENT, --ansible-requirement ANSIBLE_REQUIREMENT
                         The pip install ansible requirement. Defaults to
                         "ansible"
   -r REQUIREMENTS, --requirements REQUIREMENTS
@@ -29,4 +31,8 @@ optional arguments:
   -p PLAYBOOK, --playbook PLAYBOOK
                         Path to playbook file to run. Defaults to "build-
                         playbook.yml"
+  -e, --process-env-vars
+                        Inline replace environment variables (with pattern
+                        ${VAR}) in the requirements file. Backup the old file
+                        to *.bak
 ```
