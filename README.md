@@ -8,7 +8,7 @@ Python script to install ansible in a virtual environment, install roles, and ru
 ```
 usage: ansible-runner.py [-h] [-i INSTALL_DIR] [-c] [-v VENV_VERSION]
                          [-a ANSIBLE_REQUIREMENT] [-r REQUIREMENTS]
-                         [-p PLAYBOOK] [-e]
+                         [-o ROLES_PATH] [-p PLAYBOOK] [-e]
 
 Python script to install ansible in a virtual environment, install roles, and
 run a playbook
@@ -29,6 +29,8 @@ optional arguments:
                         Path to the ansible galaxy requirements file to
                         install roles from. Defaults to "build-
                         requirements.yml"
+  -o ROLES_PATH, --roles-path ROLES_PATH
+                        Path to install roles to. Defaults to "roles"
   -p PLAYBOOK, --playbook PLAYBOOK
                         Path to the playbook file to run. Defaults to "build-
                         playbook.yml"
