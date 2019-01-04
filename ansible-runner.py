@@ -13,6 +13,7 @@ DEFAULT_VIRTUALENV_VERSION = '16.1.0'
 DEFAULT_ANSIBLE_REQUIREMENT = 'ansible'
 DEFAULT_INSTALL_DIR = '.ansible-runner'
 DEFAULT_REQUIREMENTS_FILE = 'build-requirements.yml'
+DEFAULT_ROLES_PATH = 'roles'
 DEFAULT_PLAYBOOK_FILE = 'build-playbook.yml'
 
 ACTION_PREFIX = '>'*5
@@ -34,6 +35,8 @@ def ansible_runner():
                       help='The ansible requirement for the pip install. Defaults to "%s"' % DEFAULT_ANSIBLE_REQUIREMENT )
     parser.add_argument('-r', '--requirements', default=DEFAULT_REQUIREMENTS_FILE,
                       help='Path to the ansible galaxy requirements file to install roles from. Defaults to "%s"' % DEFAULT_REQUIREMENTS_FILE )
+    parser.add_argument('-o', '--roles-path', default=DEFAULT_ROLES_PATH,
+                      help='Path to install roles to. Defaults to "%s"' % DEFAULT_ROLES_PATH )
     parser.add_argument('-p', '--playbook', default=DEFAULT_PLAYBOOK_FILE,
                       help='Path to the playbook file to run. Defaults to "%s"' % DEFAULT_PLAYBOOK_FILE )
     parser.add_argument('-e', '--expand-env-vars', action='store_true',
@@ -72,7 +75,7 @@ def ansible_runner():
 
     run_cmd(['%s/bin/pip' % venv_dir, 'install', args.ansible_requirement])
 
-    cmd = ['%s/bin/ansible-galaxy' % venv_dir, 'install', '-r', args.requirements]
+    cmd = ['%s/bin/ansible-galaxy' % venv_dir, 'install', '-r', args.requirements, '-p', args.roles_path]
     if args.clean:
         cmd.append('-f')
     run_cmd(cmd)
