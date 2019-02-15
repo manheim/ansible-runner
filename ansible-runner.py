@@ -20,8 +20,12 @@ ACTION_PREFIX = '>'*5
 
 def run_cmd(cmd):
     print "%s Running command: %s" % (ACTION_PREFIX, ' '.join(cmd))
-    (stdout, stderr) = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    (stdout, stderr) = p.communicate()
     print stdout
+    if p.returncode != 0:
+        print "ERROR: command returned nonzero returncode: %s" % p.returncode
+        sys.exit(1)
 
 def ansible_runner():
     parser = ArgumentParser(description='Python script to install ansible in a virtual environment, install roles, and run a playbook')
